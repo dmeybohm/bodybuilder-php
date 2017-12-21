@@ -32,7 +32,7 @@ try {
     //dumpAst($templateAst);
     list($class, $methodTemplate) = extractClassAndMethod($templateAst);
     $astToConvert = removeInlineHtml($astToConvert);
-    $functions = extractFunctionCalls($astToConvert);
+    $functions = extractTestFunctionCalls($astToConvert);
     addFunctionCallsAsMethodsTo($class, $methodTemplate, $functions);
 } catch (Error $error) {
     echo "Parse error: {$error->getMessage()}\n";

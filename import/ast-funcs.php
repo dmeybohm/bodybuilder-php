@@ -19,15 +19,16 @@ function addFunctionCallsAsMethodsTo(Class_ $class, ClassMethod $method, array $
         $closure = $closure->value;
         /** @var Node\Expr\Closure $closure */
         /** @var Node\Scalar\String_ $string */
-        $testName = Inflector::camelize(str_replace("|", "", $string->value));
+        $testName = replaceName($string->value);
         $newMethod = clone $method;
         $newMethod->name = 'test' . ucfirst($testName);
         $newMethod->stmts = $closure->stmts;
         $class->stmts[] = $newMethod;
-        if (count($class->stmts) === 1) {
-            break;
-        }
     }
+}
+
+function replaceName( $name) {
+    return Inflector::camelize(preg_replace("/[^\w]+/", "_", $name));
 }
 
 function extractClassAndMethod($templateAst) {
@@ -48,13 +49,16 @@ function extractClassAndMethod($templateAst) {
     return [$visitor->class, $visitor->method];
 }
 
-function extractFunctionCalls($ast)
+function extractTestFunctionCalls($ast)
 {
     $visitor = new class extends NodeVisitorAbstract{
         public $functions = [];
 
         public function enterNode(Node $node){
-            if ($node instanceof Node\Expr\FuncCall) {
+            if ($node instanceof Node\Expr\FuncCall &&
+                $node->name instanceof Node\Name &&
+                count($node->name->parts) === 1 &&
+                $node->name->parts[0] === 'test') {
                 $this->functions[] = $node;
             }
         }
