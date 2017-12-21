@@ -1,0 +1,7 @@
+{
+  "name": "bodybuilder-php",
+  "version": "0.5.0",
+  "dependencies": {
+    "bodybuilder": "2.2.6"
+  }
+}
