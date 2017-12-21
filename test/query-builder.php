@@ -56,7 +56,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
         $result = queryBuilder()->query('common', 'body', array("query" => 'this is bonsai cool', "cutoff_frequency" => 0.001));
         $t->deepEqual($result->getQuery(), array("common" => array("body" => array("query" => 'this is bonsai cool', "cutoff_frequency" => 0.001))));
     }
-    public function testQueryBuilderCommon()
+    public function testQueryBuilderCommon2()
     {
         $t->plan(1);
         $result = queryBuilder()->query('common', 'body', array("query" => 'this is bonsai cool', "cutoff_frequency" => 0.001));
