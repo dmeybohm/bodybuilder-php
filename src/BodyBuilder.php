@@ -10,6 +10,13 @@ class BodyBuilder
     use QueryBuilderTrait, FilterBuilderTrait, UtilTrait;
 
     /**
+     * Body that gets returned.
+     *
+     * @var array
+     */
+    private $body = [];
+
+    /**
      * Create a new BodyBuilder.
      *
      * @return static
@@ -21,6 +28,8 @@ class BodyBuilder
 
     /**
      * Build an Elasticsearch array.
+     *
+     * @return array
      */
     public function build($version = self::VERSION_2)
     {
@@ -36,9 +45,45 @@ class BodyBuilder
         }
     }
 
+    /**
+     * Set the from.
+     *
+     * @param integer $from
+     * @return $this
+     */
+    public function from($from)
+    {
+        $this->body['from'] = $from;
+        return $this;
+    }
+
+    /**
+     * Set the size.
+     *
+     * @param integer $size
+     * @return $this
+     */
+    public function size($size)
+    {
+        $this->body['size'] = $size;
+        return $this;
+    }
+
+    /**
+     * Set a raw option.
+     *
+     * @param mixed $option
+     * @return $this
+     */
+    public function rawOption($key, $value)
+    {
+        $this->body[$key] = $value;
+        return $this;
+    }
+
     private function doBuild(array $queries, array $filters)
     {
-        $result = [];
+        $result = $this->body;
 
         if (!empty($filters)) {
             $filterBody = $queryBody = [];
@@ -58,7 +103,7 @@ class BodyBuilder
 
     private function doBuildV1(array $queries, array $filters)
     {
-        $result = [];
+        $result = $this->body;
 
         if (!empty($filters)) {
             $result['query']['filtered']['filter'] = $filters;
