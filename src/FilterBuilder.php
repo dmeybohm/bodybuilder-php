@@ -4,7 +4,7 @@ namespace Best\ElasticSearch\BodyBuilder;
 
 class FilterBuilder
 {
-    use FilterBuilderTrait;
+    use FilterBuilderTrait, UtilTrait;
 
     /**
      * @param array $options

@@ -55,7 +55,7 @@ trait FilterBuilderTrait
 
     private function makeFilter($filterType, ...$args)
     {
-        $this->pushQuery($this->filters, $filterType, false, ...$args);
+        $this->pushQuery($this->filters, $filterType, true, ...$args);
         return $this;
     }
 }
