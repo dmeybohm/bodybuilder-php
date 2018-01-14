@@ -1,6 +1,6 @@
 <?php
 
-class FilterBuilderTest extends \PHPUnit_Framework_TestCase
+class FilterBuilderTest extends \PHPUnit\Framework\TestCase
 {
     public function testFilterBuilderFilterTerm()
     {

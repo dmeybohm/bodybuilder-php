@@ -1,6 +1,6 @@
 <?php
 
-class AggregationBuilderTest extends \PHPUnit_Framework_TestCase
+class AggregationBuilderTest extends \PHPUnit\Framework\TestCase
 {
     public function testAggregationBuilderAvgAggregation()
     {

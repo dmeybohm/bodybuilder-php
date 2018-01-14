@@ -6,6 +6,12 @@
         "phpunit/phpunit": "^4.8",
         "doctrine/inflector": "^1.2"
     },
+    "autoload": {
+        "psr-4": {
+            "Best\\ElasticSearch\\BodyBuilder\\Test\\": "test/",
+            "Best\\ElasticSearch\\BodyBuilder\\": "src/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
