@@ -48,7 +48,7 @@ class BodyBuilder
             } elseif (!empty($queries)) {
                 $queryBody['query']['bool']['must'] = $queries;
             }
-            $result = array_merge($result, $filterBody, $queryBody);
+            $result = array_merge_recursive($result, $filterBody, $queryBody);
         } elseif (!empty($queries)) {
             $result['query'] = $queries;
         }
