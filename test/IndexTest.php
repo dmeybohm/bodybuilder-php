@@ -11,7 +11,7 @@ function bodyBuilder() {
     return new BodyBuilder();
 }
 
-class IndexTestCase extends BaseTestCase
+class IndexTest extends BaseTestCase
 {
     public function testBodyBuilderShouldBuildQueryWithNoField()
     {

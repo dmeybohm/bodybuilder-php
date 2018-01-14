@@ -53,6 +53,12 @@ trait FilterBuilderTrait
         return $this->makeFilter('not', ...$args);
     }
 
+    public function filterMinimumShouldMatch($param)
+    {
+        $this->filters['minimum_should_match'] = $param;
+        return $this;
+    }
+
     private function makeFilter($filterType, ...$args)
     {
         $this->pushQuery($this->filters, $filterType, true, ...$args);

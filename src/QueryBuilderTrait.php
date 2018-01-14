@@ -80,7 +80,7 @@ trait QueryBuilderTrait
      */
     public function queryMinimumShouldMatch($param)
     {
-        $this->addMinimumShouldMatch($param);
+        $this->query['minimum_should_match'] = $param;
         return $this;
     }
 
@@ -95,16 +95,5 @@ trait QueryBuilderTrait
             $this->options['isInFilterContext'] : false;
         $this->pushQuery($this->query, $type, $isInFilterContext, ...$args);
         return $this;
-    }
-
-    /**
-     * Add minimum should match.
-     *
-     * @param mixed $value
-     * @return void
-     */
-    private function addMinimumShouldMatch($value)
-    {
-        $this->query['minimum_should_match'] = $value;
     }
 }
