@@ -115,7 +115,7 @@ class IndexTest extends BaseTestCase
     public function testBodyBuilderShouldNestBoolMergedQueries()
     {
         $this->plan(1);
-        $result = bodyBuilder()->query('nested', 'path', 'obj1', array("score_mode" => 'avg'), function ($q) {
+        $result = bodyBuilder()->query('nested', 'path', 'obj1', array("score_mode" => 'avg'), function (BodyBuilder $q) {
             return $q->query('match', 'obj1.name', 'blue')->query('range', 'obj1.count', array("gt" => 5));
         });
         $this->assertEquals($result->getQuery(), array("nested" => array("path" => 'obj1', "score_mode" => 'avg', "query" => array("bool" => array("must" => array(array("match" => array("obj1.name" => 'blue')), array("range" => array("obj1.count" => array("gt" => 5)))))))));
@@ -194,8 +194,10 @@ class IndexTest extends BaseTestCase
             return $f;
         })->build();
         $this->assertEquals($result, array("query" => array("bool" => array("filter" => array("bool" => array("should" => array(array("bool" => array("must" => array(array("terms" => array("tags" => array('Popular'))), array("terms" => array("brands" => array('A', 'B')))))), array("bool" => array("must" => array(array("terms" => array("tags" => array('Emerging'))), array("terms" => array("brands" => array('C')))))), array("bool" => array("must" => array(array("terms" => array("tags" => array('Rumor'))), array("terms" => array("companies" => array('A', 'C', 'D')))))))))))));
-        $this->assertEquals($result->query->bool->filter->bool->should, array(array("bool" => array("must" => array(array("terms" => array("tags" => array('Popular'))), array("terms" => array("brands" => array('A', 'B')))))), array("bool" => array("must" => array(array("terms" => array("tags" => array('Emerging'))), array("terms" => array("brands" => array('C')))))), array("bool" => array("must" => array(array("terms" => array("tags" => array('Rumor'))), array("terms" => array("companies" => array('A', 'C', 'D'))))))));
-        $this->assertEquals($result->query->bool->filter->bool->should[0], array("bool" => array("must" => array(array("terms" => array("tags" => array('Popular'))), array("terms" => array("brands" => array('A', 'B')))))));
+        $this->assertEquals($result['query']['bool']['filter']['bool']['should'],
+            array(array("bool" => array("must" => array(array("terms" => array("tags" => array('Popular'))), array("terms" => array("brands" => array('A', 'B')))))), array("bool" => array("must" => array(array("terms" => array("tags" => array('Emerging'))), array("terms" => array("brands" => array('C')))))), array("bool" => array("must" => array(array("terms" => array("tags" => array('Rumor'))), array("terms" => array("companies" => array('A', 'C', 'D'))))))));
+        $this->assertEquals($result['query']['bool']['filter']['bool']['should'][0],
+            array("bool" => array("must" => array(array("terms" => array("tags" => array('Popular'))), array("terms" => array("brands" => array('A', 'B')))))));
     }
     public function testBodybuilderMinimumShouldMatchFilter()
     {
