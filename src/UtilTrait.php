@@ -15,7 +15,6 @@ trait UtilTrait
      * @param array $existing
      * @param $boolKey
      * @param $type
-     * @param $isInFilterContext
      * @param array ...$args
      * @return void
      */
@@ -30,12 +29,12 @@ trait UtilTrait
             // don't require the user to return a result, since PHP doesn't have
             // a concise syntax for anonymous functions, but allow the user to
             // to override the builder that we use:
-                $nestedResult = $nestedResult === null ? $nestedInstance : $nestedResult;
+            $nestedResult = $nestedResult === null ? $nestedInstance : $nestedResult;
             if (!$nestedResult instanceof BodyBuilder) {
                 throw new \RuntimeException("Invalid class returned from callback");
             }
 
-            if (!$isInFilterContext && $nestedResult->hasQuery()) {
+            if ($nestedResult->hasQuery()) {
                 $nested['query'] = $nestedResult->getQuery();
             }
             if ($nestedResult->hasFilter()) {
@@ -106,8 +105,7 @@ trait UtilTrait
         if ($unwrapped['must_not']) {
             $cleaned['must_not'] = $filters['not'];
         }
-        if (
-            $unwrapped['minimum_should_match'] &&
+        if ($unwrapped['minimum_should_match'] &&
             count($filters['or']) > 1
         ) {
             $cleaned['minimum_should_match'] = $unwrapped['minimum_should_match'];

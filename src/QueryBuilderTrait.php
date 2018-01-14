@@ -91,9 +91,7 @@ trait QueryBuilderTrait
      */
     private function makeQuery($type, ...$args)
     {
-        $isInFilterContext = isset($this->options['isInFilterContext']) ?
-            $this->options['isInFilterContext'] : false;
-        $this->pushQuery($this->query, $type, $isInFilterContext, ...$args);
+        $this->pushQuery($this->query, $type, false, ...$args);
         return $this;
     }
 }
