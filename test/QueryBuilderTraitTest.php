@@ -196,7 +196,7 @@ class QueryBuilderTraitTest extends BaseTestCase
     public function testQueryBuilderNested()
     {
         $this->plan(1);
-        $result = queryBuilder()->query('nested', array("path" => 'obj1', "score_mode" => 'avg'), function (FilterAndQueryBuilder $q) {
+        $result = queryBuilder()->query(Q::Nested, array("path" => 'obj1', "score_mode" => 'avg'), function (FilterAndQueryBuilder $q) {
             $q->query(Q::Match, 'obj1.name', 'blue');
             $q->query(Q::Range, 'obj1.count', array("gt" => 5));
         });
