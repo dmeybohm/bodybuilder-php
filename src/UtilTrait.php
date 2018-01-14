@@ -24,19 +24,14 @@ trait UtilTrait
         $nested = [];
         if (is_callable(end($args))) {
             $nestedCallback = array_pop($args);
-            $nestedInstance = $isInFilterContext ? new FilterBuilder($this->options)
-                : new FilterAndQueryBuilder($this->options)
-            ;
+            $nestedInstance = new BodyBuilder();
             $nestedResult = $nestedCallback($nestedInstance);
 
             // don't require the user to return a result, since PHP doesn't have
             // a concise syntax for anonymous functions, but allow the user to
             // to override the builder that we use:
                 $nestedResult = $nestedResult === null ? $nestedInstance : $nestedResult;
-            if (!$nestedResult instanceof FilterAndQueryBuilder &&
-                !$nestedResult instanceof FilterBuilder &&
-                !$nestedResult instanceof BodyBuilder
-            ) {
+            if (!$nestedResult instanceof BodyBuilder) {
                 throw new \RuntimeException("Invalid class returned from callback");
             }
 

@@ -2,7 +2,7 @@
 
 namespace Best\ElasticSearch\BodyBuilder\Test;
 
-use Best\ElasticSearch\BodyBuilder\FilterBuilder;
+use Best\ElasticSearch\BodyBuilder\BodyBuilder;
 use Best\ElasticSearch\BodyBuilder\FilterBuilderTrait;
 use Best\ElasticSearch\BodyBuilder\QueryType;
 use Best\ElasticSearch\BodyBuilder\UtilTrait;
@@ -26,7 +26,7 @@ class FilterBuilderTest extends BaseTestCase
     public function testFilterBuilderFilterNested()
     {
         $this->plan(1);
-        $result = filterBuilder()->filter(QueryType::CONSTANT_SCORE, function (FilterBuilder $f) {
+        $result = filterBuilder()->filter(QueryType::CONSTANT_SCORE, function (BodyBuilder $f) {
             $f->filter(QueryType::TERM, 'field', 'value');
         });
         $this->assertEquals($result->getFilter(), array("constant_score" => array("filter" => array("term" => array("field" => 'value')))));
