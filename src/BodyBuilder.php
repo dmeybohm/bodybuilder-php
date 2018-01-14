@@ -46,6 +46,30 @@ class BodyBuilder
     }
 
     /**
+     * Set a sort direction on a given field.
+     *
+     * @param  string $field             Field name.
+     * @param  string $direction='asc' A valid direction: 'asc' or 'desc'.
+     * @returns $this Builder.
+     */
+    public function sort($field, $direction = 'asc')
+    {
+        $this->body['sort'] = empty($this->body['sort']) ? [] : $this->body['sort'];
+        if (is_array($field)) {
+
+            foreach ($field as $sorts) {
+                foreach ($sorts as $key => $value) {
+                    $this->sortMerge($this->body['sort'], $key, $value);
+                }
+            }
+        } else {
+            $this->sortMerge($this->body['sort'], $field, $direction);
+        }
+
+        return $this;
+    }
+
+    /**
      * Set the from.
      *
      * @param integer $from

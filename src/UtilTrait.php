@@ -116,6 +116,26 @@ trait UtilTrait
         ];
     }
 
+    protected function sortMerge(&$current, $field, $value)
+    {
+        if (is_array($value)) {
+            $payload = [$field => $value];
+        } else {
+            $payload = [$field => ['order' => $value]];
+        }
+        $idx = null;
+        foreach ($current as $key => $obj) {
+            if (isset($obj[$field])) {
+                $idx = $key;
+            }
+        }
+        if ($idx === null) {
+            array_push($current, $payload);
+        } else {
+            $current[$key] = array_merge($current[$key], $value);
+        }
+    }
+
     private function unwrap(array $arr)
     {
         return count($arr) > 1 ? $arr : end($arr);
