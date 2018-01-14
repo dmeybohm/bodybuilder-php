@@ -4,7 +4,8 @@ namespace Best\ElasticSearch\BodyBuilder;
 
 trait QueryBuilderTrait
 {
-    abstract protected function pushQuery(array &$existing, $boolKey, $type, ...$args);
+    abstract protected function pushQuery(array &$existing, $boolKey, $isInFilterContext, $type, ...$args);
+    abstract protected function toBool(array $filters);
 
     /**
      * Arrays of query parameters.
@@ -90,8 +91,10 @@ trait QueryBuilderTrait
      */
     private function makeQuery($type, ...$args)
     {
-       $this->pushQuery($this->query, $type, ...$args);
-       return $this;
+        $isInFilterContext = isset($this->options['isInFilterContext']) ?
+            $this->options['isInFilterContext'] : false;
+        $this->pushQuery($this->query, $type, $isInFilterContext, ...$args);
+        return $this;
     }
 
     /**

@@ -5,11 +5,6 @@ namespace Best\ElasticSearch\BodyBuilder;
 trait UtilTrait
 {
     /**
-     * @var boolean
-     */
-    protected $isInFilterContext = false;
-
-    /**
      * Options
      *
      * @var array
@@ -17,19 +12,19 @@ trait UtilTrait
     protected $options = [];
 
     /**
-     * @param &$existing
-     * @param array $options
+     * @param array $existing
      * @param $boolKey
      * @param $type
+     * @param $isInFilterContext
      * @param array ...$args
      * @return void
      */
-    protected function pushQuery(array &$existing, $boolKey, $type, ...$args)
+    protected function pushQuery(array &$existing, $boolKey, $isInFilterContext, $type, ...$args)
     {
         $nested = [];
         if (is_callable(end($args))) {
             $nestedCallback = array_pop($args);
-            $nestedInstance = $this->isInFilterContext ? new FilterBuilder($this->options)
+            $nestedInstance = $isInFilterContext ? new FilterBuilder($this->options)
                 : new FilterAndQueryBuilder($this->options)
             ;
             $nestedResult = $nestedCallback($nestedInstance);
@@ -45,7 +40,7 @@ trait UtilTrait
                 throw new \RuntimeException("Invalid class returned from callback");
             }
 
-            if (!$this->isInFilterContext && $nestedResult->hasQuery()) {
+            if (!$isInFilterContext && $nestedResult->hasQuery()) {
                 $nested['query'] = $nestedResult->getQuery();
             }
             if ($nestedResult->hasFilter()) {
@@ -54,7 +49,7 @@ trait UtilTrait
         }
 
         if (($type === 'bool' || $type === 'constant_score') &&
-            $this->isInFilterContext &&
+            $isInFilterContext &&
             isset($nested['filter']['bool'])
         ) {
             $value = $nested['filter']['bool'];
@@ -87,7 +82,7 @@ trait UtilTrait
         return array_merge($mainClause, $opts);
     }
 
-    protected function toBool($filters)
+    protected function toBool(array $filters)
     {
         $msm = isset($filters['minimum_should_match']) ? $filters['minimum_should_match'] : null;
         $unwrapped = [
