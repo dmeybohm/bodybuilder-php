@@ -11,8 +11,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Best\\ElasticSearch\\BodyBuilder\\Test\\": "test/",
             "Best\\ElasticSearch\\BodyBuilder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Best\\ElasticSearch\\BodyBuilder\\Test\\": "test/"
         }
     },
     "license": "MIT",
