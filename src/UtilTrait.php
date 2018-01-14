@@ -5,7 +5,6 @@ namespace Best\ElasticSearch\BodyBuilder;
 trait UtilTrait
 {
     /**
-     *
      * @var boolean
      */
     protected $isInFilterContext = false;
@@ -19,28 +18,52 @@ trait UtilTrait
 
     /**
      * @param &$existing
+     * @param array $options
      * @param $boolKey
      * @param $type
      * @param array ...$args
      * @return void
      */
-    protected function pushQuery(&$existing, $boolKey, $type, ...$args)
+    protected function pushQuery(array &$existing, $boolKey, $type, ...$args)
     {
         $nested = [];
         if (is_callable(end($args))) {
-            throw new \RuntimeException("Unimplemened");
+            $nestedCallback = array_pop($args);
+            $nestedInstance = $this->isInFilterContext ? new FilterBuilder($this->options)
+                : new FilterAndQueryBuilder($this->options)
+            ;
+            $nestedResult = $nestedCallback($nestedInstance);
+
+            // don't require the user to return a result, since PHP doesn't have
+            // a concise syntax for anonymous functions, but allow the user to
+            // to override the builder that we use:
+                $nestedResult = $nestedResult === null ? $nestedInstance : $nestedResult;
+            if (!$nestedResult instanceof FilterAndQueryBuilder &&
+                !$nestedResult instanceof FilterBuilder &&
+                !$nestedResult instanceof BodyBuilder
+            ) {
+                throw new \RuntimeException("Invalid class returned from callback");
+            }
+
+            if (!$this->isInFilterContext && $nestedResult->hasQuery()) {
+                $nested['query'] = $nestedResult->getQuery();
+            }
+            if ($nestedResult->hasFilter()) {
+                $nested['filter'] = $nestedResult->getFilter();
+            }
         }
 
         if (($type === 'bool' || $type === 'constant_score') &&
             $this->isInFilterContext &&
             isset($nested['filter']['bool'])
         ) {
-            $value = array_merge($this->buildClause(...$args), $nested['filter']['bool']);
-            $existing[$boolKey][] = [$type => $value];
+            $value = $nested['filter']['bool'];
         } else {
-            $value = array_merge($this->buildClause(...$args), $nested);
-            $existing[$boolKey][] = [$type => $value];
+            $value = $nested;
         }
+
+        $value = array_merge($this->buildClause(...$args), $value);
+        $existing[$boolKey][] = [$type => $value];
     }
 
     /**

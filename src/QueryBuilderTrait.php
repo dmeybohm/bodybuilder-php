@@ -4,7 +4,7 @@ namespace Best\ElasticSearch\BodyBuilder;
 
 trait QueryBuilderTrait
 {
-    use UtilTrait;
+    abstract protected function pushQuery(array &$existing, $boolKey, $type, ...$args);
 
     /**
      * Arrays of query parameters.

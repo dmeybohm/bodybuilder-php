@@ -2,11 +2,12 @@
 
 namespace Best\ElasticSearch\BodyBuilder\Test;
 
+use Best\ElasticSearch\BodyBuilder\FilterAndQueryBuilder;
 use Best\ElasticSearch\BodyBuilder\QueryBuilderTrait;
+use Best\ElasticSearch\BodyBuilder\UtilTrait;
 
 class QueryBuilderClass {
-    use QueryBuilderTrait;
-
+    use QueryBuilderTrait, UtilTrait;
 }
 
 function queryBuilder() {
@@ -186,7 +187,7 @@ class QueryBuilderTraitTest extends BaseTestCase
     public function testQueryBuilderConstantScore()
     {
         $this->plan(1);
-        $result = queryBuilder()->query('constant_score', array("boost" => 1.2), function ($q) {
+        $result = queryBuilder()->query('constant_score', array("boost" => 1.2), function (FilterAndQueryBuilder $q) {
             return $q->filter('term', 'user', 'kimchy');
         });
         $this->assertEquals($result->getQuery(), array("constant_score" => array("filter" => array("term" => array("user" => 'kimchy')), "boost" => 1.2)));
@@ -194,15 +195,16 @@ class QueryBuilderTraitTest extends BaseTestCase
     public function testQueryBuilderNested()
     {
         $this->plan(1);
-        $result = queryBuilder()->query('nested', array("path" => 'obj1', "score_mode" => 'avg'), function ($q) {
-            return $q->query('match', 'obj1.name', 'blue')->query('range', 'obj1.count', array("gt" => 5));
+        $result = queryBuilder()->query('nested', array("path" => 'obj1', "score_mode" => 'avg'), function (FilterAndQueryBuilder $q) {
+            $q->query('match', 'obj1.name', 'blue');
+            $q->query('range', 'obj1.count', array("gt" => 5));
         });
         $this->assertEquals($result->getQuery(), array("nested" => array("path" => 'obj1', "score_mode" => 'avg', "query" => array("bool" => array("must" => array(array("match" => array("obj1.name" => 'blue')), array("range" => array("obj1.count" => array("gt" => 5)))))))));
     }
     public function testQueryBuilderHasChild()
     {
         $this->plan(1);
-        $result = queryBuilder()->query('has_child', 'type', 'blog_tag', function ($q) {
+        $result = queryBuilder()->query('has_child', 'type', 'blog_tag', function (FilterAndQueryBuilder $q) {
             return $q->query('term', 'tag', 'something');
         });
         $this->assertEquals($result->getQuery(), array("has_child" => array("type" => 'blog_tag', "query" => array("term" => array("tag" => 'something')))));
@@ -210,7 +212,7 @@ class QueryBuilderTraitTest extends BaseTestCase
     public function testQueryBuilderHasParent()
     {
         $this->plan(1);
-        $result = queryBuilder()->query('has_parent', 'parent_tag', 'blog', function ($q) {
+        $result = queryBuilder()->query('has_parent', 'parent_tag', 'blog', function (FilterAndQueryBuilder $q) {
             return $q->query('term', 'tag', 'something');
         });
         $this->assertEquals($result->getQuery(), array("has_parent" => array("parent_tag" => 'blog', "query" => array("term" => array("tag" => 'something')))));

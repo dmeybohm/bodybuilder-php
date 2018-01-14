@@ -4,7 +4,7 @@ namespace Best\ElasticSearch\BodyBuilder;
 
 class BodyBuilder
 {
-    use QueryBuilderTrait;
+    use QueryBuilderTrait, FilterBuilderTrait, UtilTrait;
 
     /**
      * Create a new BodyBuilder.
