@@ -18,38 +18,90 @@ trait QueryBuilderTrait
     ];
 
     /**
-     * Add minimum should match.
+     * Add a query.
      *
-     * @param string $str
-     * @return void
-     */
-    protected function addMinimumShouldMatch($str)
-    {
-        $query['minimum_should_match'] = $str;
-    }
-
-    /**
      * @param array ...$args
      * @return $this
      */
     public function query(...$args)
     {
-        $this->makeQuery('and', ...$args);
-        return $this;
+        return $this->makeQuery('and', ...$args);
     }
 
+    /**
+     * Add an 'and' query.
+     *
+     * @return $this
+     */
+    public function andQuery(...$args)
+    {
+        return $this->query(...$args);
+    }
+
+    /**
+     * Add an 'or' query.
+     *
+     * @param array ...$args
+     * @return $this
+     */
+    public function orQuery(...$args)
+    {
+        return $this->makeQuery('or', ...$args);
+    }
+
+    /**
+     * Get the query for this object.
+     *
+     * @return array
+     */
     public function getQuery()
     {
         return $this->hasQuery() ? $this->toBool($this->query) : [];
     }
 
+    /**
+     * Whether the object has a query.
+     *
+     * @return boolean
+     */
     public function hasQuery()
     {
         return !empty($this->query['and']) || !empty($this->query['or']) || !empty($this->query['not']);
     }
 
-    protected function makeQuery($type, ...$args)
+    /**
+     * Set the `minimum_should_match` property on a bool query with more than
+     * one `should` clause.
+     *
+     * @param  mixed $param  minimum_should_match parameter. For possible values
+     *                       see https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-minimum-should-match.html
+     * @return $this BodyBuilder.
+     */
+    public function queryMinimumShouldMatch($param)
+    {
+        $this->addMinimumShouldMatch($param);
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @param mixed ...$args
+     * @return $this
+     */
+    private function makeQuery($type, ...$args)
     {
        $this->pushQuery($this->query, $type, ...$args);
+       return $this;
+    }
+
+    /**
+     * Add minimum should match.
+     *
+     * @param mixed $value
+     * @return void
+     */
+    private function addMinimumShouldMatch($value)
+    {
+        $this->query['minimum_should_match'] = $value;
     }
 }

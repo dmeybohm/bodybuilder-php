@@ -22,7 +22,7 @@ trait UtilTrait
      * @param $boolKey
      * @param $type
      * @param array ...$args
-     * @return array
+     * @return void
      */
     protected function pushQuery(&$existing, $boolKey, $type, ...$args)
     {
@@ -41,7 +41,6 @@ trait UtilTrait
             $value = array_merge($this->buildClause(...$args), $nested);
             $existing[$boolKey][] = [$type => $value];
         }
-        return $existing;
     }
 
     /**
@@ -51,9 +50,8 @@ trait UtilTrait
      */
     protected function buildClause($field = null, $value = null, $opts = [])
     {
-        // @todo see if !empty is right here:
-        $hasField = !empty($field);
-        $hasValue = !empty($value);
+        $hasField = $field !== null;
+        $hasValue = $value !== null;
         $mainClause = [];
 
         if ($hasValue) {
@@ -61,7 +59,7 @@ trait UtilTrait
         } elseif (is_array($field)) {
             $mainClause = $field;
         } elseif ($hasField) {
-            $mainClause = [$field];
+            $mainClause = compact('field');
         }
         return array_merge($mainClause, $opts);
     }

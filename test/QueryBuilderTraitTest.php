@@ -6,6 +6,7 @@ use Best\ElasticSearch\BodyBuilder\QueryBuilderTrait;
 
 class QueryBuilderClass {
     use QueryBuilderTrait;
+
 }
 
 function queryBuilder() {
