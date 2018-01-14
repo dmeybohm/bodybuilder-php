@@ -37,5 +37,5 @@ final class Q
     const MoreLikeThis = 'more_like_this';
     const Template = 'template';
     const Script = 'script';
-    const _Or = 'or';
+    const Or_ = 'or';
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Best\ElasticSearch\BodyBuilder\Test;
+
 use Best\ElasticSearch\BodyBuilder\BodyBuilder;
 
 /**
@@ -9,7 +11,7 @@ function bodyBuilder() {
     return new BodyBuilder();
 }
 
-class IndexTestCase extends \Best\ElasticSearch\BodyBuilder\Test\BaseTestCase
+class IndexTestCase extends BaseTestCase
 {
     public function testBodyBuilderShouldBuildQueryWithNoField()
     {

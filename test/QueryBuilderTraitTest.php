@@ -269,7 +269,7 @@ class QueryBuilderTraitTest extends BaseTestCase
     public function testQueryBuilderOr()
     {
         $this->plan(1);
-        $result = queryBuilder()->query(Q::_Or, array(array("term" => array("user" => 'kimchy')), array("term" => array("user" => 'tony'))));
+        $result = queryBuilder()->query(Q::Or_, array(array("term" => array("user" => 'kimchy')), array("term" => array("user" => 'tony'))));
         $this->assertEquals($result->getQuery(), array("or" => array(array("term" => array("user" => 'kimchy')), array("term" => array("user" => 'tony')))));
     }
     public function testQueryBuilderMinimumShouldMatchWithOneQueryIgnoresMinimum()
