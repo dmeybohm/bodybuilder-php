@@ -1,6 +1,9 @@
 {
-    "name": "best/bodybuilder",
+    "name": "best/elasticsearch-bodybuilder",
     "type": "library",
+    "require": {
+        "php": ">=5.6.0"
+    },
     "require-dev": {
         "nikic/php-parser": "^3.1",
         "phpunit/phpunit": "^4.8",
