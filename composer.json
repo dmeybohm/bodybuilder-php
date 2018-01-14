@@ -1,5 +1,5 @@
 {
-    "name": "dmeybohm/bodybuilder",
+    "name": "best/bodybuilder",
     "type": "library",
     "require-dev": {
         "nikic/php-parser": "^3.1",
