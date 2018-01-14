@@ -5,7 +5,7 @@ namespace Best\ElasticSearch\BodyBuilder;
 /**
  * Top-level query types.
  */
-final class QueryType
+class QueryType
 {
     const Term = 'term';
     const Ids = 'ids';
