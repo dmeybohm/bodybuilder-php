@@ -7,7 +7,7 @@ class BodyBuilder
     const VERSION_1 = 'v1';
     const VERSION_2 = 'v2';
 
-    use QueryBuilderTrait, FilterBuilderTrait, UtilTrait;
+    use QueryBuilderTrait, FilterBuilderTrait, AggregationBuilderTrait, UtilTrait;
 
     /**
      * Body that gets returned.
@@ -41,7 +41,7 @@ class BodyBuilder
         } elseif ($version === 'v1') {
             return $this->doBuildV1($queries, $filters);
         } else {
-            throw new \RuntimeException("Unsupported version");
+            throw new \RuntimeException('Unsupported version');
         }
     }
 
@@ -56,7 +56,6 @@ class BodyBuilder
     {
         $this->body['sort'] = empty($this->body['sort']) ? [] : $this->body['sort'];
         if (is_array($field)) {
-
             foreach ($field as $sorts) {
                 foreach ($sorts as $key => $value) {
                     $this->sortMerge($this->body['sort'], $key, $value);
@@ -78,6 +77,7 @@ class BodyBuilder
     public function from($from)
     {
         $this->body['from'] = $from;
+
         return $this;
     }
 
@@ -90,6 +90,7 @@ class BodyBuilder
     public function size($size)
     {
         $this->body['size'] = $size;
+
         return $this;
     }
 
@@ -102,6 +103,7 @@ class BodyBuilder
     public function rawOption($key, $value)
     {
         $this->body[$key] = $value;
+
         return $this;
     }
 
@@ -109,16 +111,16 @@ class BodyBuilder
     {
         $result = $this->body;
 
-        if (!empty($filters)) {
+        if (! empty($filters)) {
             $filterBody = $queryBody = [];
             $filterBody['query']['bool']['filter'] = $filters;
-            if (!empty($queries['bool'])) {
+            if (! empty($queries['bool'])) {
                 $queryBody['query']['bool'] = $queries['bool'];
-            } elseif (!empty($queries)) {
+            } elseif (! empty($queries)) {
                 $queryBody['query']['bool']['must'] = $queries;
             }
             $result = array_merge_recursive($result, $filterBody, $queryBody);
-        } elseif (!empty($queries)) {
+        } elseif (! empty($queries)) {
             $result['query'] = $queries;
         }
 
@@ -129,13 +131,13 @@ class BodyBuilder
     {
         $result = $this->body;
 
-        if (!empty($filters)) {
+        if (! empty($filters)) {
             $result['query']['filtered']['filter'] = $filters;
 
-            if (!empty($queries)) {
+            if (! empty($queries)) {
                 $result['query']['filtered']['query'] = $queries;
             }
-        } elseif (!empty($queries)) {
+        } elseif (! empty($queries)) {
             $result['query'] = $queries;
         }
 
