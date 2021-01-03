@@ -29,6 +29,7 @@ trait AggregationBuilderTrait
                 }
             } else {
                 if (is_callable(end($args))) {
+                    // TODO callback handling here
                 } else {
                     $test = [
                         'field' => $field
