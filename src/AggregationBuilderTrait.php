@@ -12,6 +12,42 @@ trait AggregationBuilderTrait
 
     private function makeAggregation($type, $field, ...$args)
     {
+        $name = ! empty($args) && is_string($args[0]) ? $args[0] : "agg_${type}_${field}";
+
+        if (! empty($args)) {
+            if (is_string($args[0])) {
+                if (is_array($field)) {
+                    $this->aggregations[$name] = [
+                        $type => $field
+                    ];
+                } else {
+                    $this->aggregations[$name] = [
+                        $type => [
+                            'field' => $field
+                        ]
+                    ];
+                }
+            } else {
+                if (is_callable(end($args))) {
+                } else {
+                    $test = [
+                        'field' => $field
+                    ];
+
+                    $test = array_merge($test, $args[0]);
+
+                    $this->aggregations[$name] = [
+                        $type => $test
+                    ];
+                }
+            }
+        } else {
+            $this->aggregations[$name] = [
+                $type => [
+                    'field' => $field
+                ]
+            ];
+        }
     }
 
     public function aggregation(...$args)
