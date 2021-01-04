@@ -35,11 +35,12 @@ class BodyBuilder
     {
         $queries = $this->getQuery();
         $filters = $this->getFilter();
+        $aggregations = $this->getAggregations();
 
         if ($version === 'v2') {
-            return $this->doBuild($queries, $filters);
+            return $this->doBuild($queries, $filters, $aggregations);
         } elseif ($version === 'v1') {
-            return $this->doBuildV1($queries, $filters);
+            return $this->doBuildV1($queries, $filters, $aggregations);
         } else {
             throw new \RuntimeException('Unsupported version');
         }
@@ -107,7 +108,7 @@ class BodyBuilder
         return $this;
     }
 
-    private function doBuild(array $queries, array $filters)
+    private function doBuild(array $queries, array $filters, array $aggregations)
     {
         $result = $this->body;
 
@@ -124,10 +125,14 @@ class BodyBuilder
             $result['query'] = $queries;
         }
 
+        if (! empty($aggregations)) {
+            $result['aggs'] = $aggregations;
+        }
+
         return $result;
     }
 
-    private function doBuildV1(array $queries, array $filters)
+    private function doBuildV1(array $queries, array $filters, array $aggregations)
     {
         $result = $this->body;
 
@@ -139,6 +144,10 @@ class BodyBuilder
             }
         } elseif (! empty($queries)) {
             $result['query'] = $queries;
+        }
+
+        if (! empty($aggregations)) {
+            $result['aggregations'] = $aggregations;
         }
 
         return $result;
