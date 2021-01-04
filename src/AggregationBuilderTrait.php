@@ -12,43 +12,55 @@ trait AggregationBuilderTrait
 
     private function makeAggregation($type, $field, ...$args)
     {
-        $name = ! empty($args) && is_string($args[0]) ? $args[0] : "agg_${type}_${field}";
+        $aggName = '';
+        $opts = [];
+        $nestedClause = [];
 
-        if (! empty($args)) {
-            if (is_string($args[0])) {
-                if (is_array($field)) {
-                    $this->aggregations[$name] = [
-                        $type => $field
-                    ];
-                } else {
-                    $this->aggregations[$name] = [
-                        $type => [
-                            'field' => $field
-                        ]
-                    ];
+        if (count($args) > 0) {
+            foreach ($args as $arg) {
+                if (is_string($arg)) {
+                    $aggName = $arg;
+                    continue;
                 }
-            } else {
+
+                if (is_array($arg)) {
+                    $opts = array_merge($opts, $arg);
+                    continue;
+                }
+
                 if (is_callable(end($args))) {
-                    // TODO callback handling here
-                } else {
-                    $test = [
-                        'field' => $field
-                    ];
+                    $nestedCallback = array_pop($args);
+                    $nestedInstance = new BodyBuilder();
+                    $nestedResult = $nestedCallback($nestedInstance);
 
-                    $test = array_merge($test, $args[0]);
+                    $nestedResult = $nestedResult === null ? $nestedInstance : $nestedResult;
+                    if (! $nestedResult instanceof BodyBuilder) {
+                        throw new \RuntimeException('Invalid class returned from callback');
+                    }
 
-                    $this->aggregations[$name] = [
-                        $type => $test
-                    ];
+                    if ($nestedResult->hasFilter()) {
+                        $nestedClause['filter'] = $nestedResult->getFilter();
+                    }
+
+                    if ($nestedResult->hasAggregations()) {
+                        $nestedClause['aggs'] = $nestedResult->getAggregations();
+                    }
+                    continue;
                 }
             }
-        } else {
-            $this->aggregations[$name] = [
-                $type => [
-                    'field' => $field
-                ]
-            ];
         }
+
+        $innerClause = [
+            $type => $this->buildClause($field, null, $opts)
+        ];
+
+        $innerClause = array_merge($innerClause, $nestedClause);
+
+        if (empty($aggName)) {
+            $aggName = "agg_${type}_${field}";
+        }
+
+        $this->aggregations[$aggName] = $innerClause;
     }
 
     public function aggregation(...$args)
