@@ -8,16 +8,6 @@
         "nikic/php-parser": "^3.1",
         "doctrine/inflector": "^1.2"
     },
-    "autoload": {
-        "psr-4": {
-            "Best\\ElasticSearch\\BodyBuilder\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Best\\ElasticSearch\\BodyBuilder\\Test\\": "test/"
-        }
-    },
     "license": "MIT",
     "authors": [
         {

@@ -2,7 +2,7 @@
 
 namespace Best\ElasticSearch\BodyBuilder\AstImport;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/ast-funcs.php';
 
 use PhpParser\Error;
