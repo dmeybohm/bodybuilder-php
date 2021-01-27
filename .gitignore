@@ -1,3 +1,6 @@
 /vendor/
-/node_modules/
+/import/node_modules/
 composer.lock
+import/composer.lock
+import/vendor
+.phpunit.result.cache
